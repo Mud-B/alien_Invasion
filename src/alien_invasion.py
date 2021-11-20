@@ -27,7 +27,7 @@ class AlienInvasion:
         while True:
             self._check_events()
             self.ship.update()
-            self.bullets.update()
+            self._update_bullets()
             self._update_screen()
 
     def _check_events(self):
@@ -66,9 +66,19 @@ class AlienInvasion:
 
     def _fire_bullet(self):
         """ build a bullet, add it into group bullets """
-        new_bullet = Bullet(self)
-        self.bullets.add(new_bullet)
-        
+        if len(self.bullets) < self.settings.bullet_allowed:
+            new_bullet = Bullet(self)
+            self.bullets.add(new_bullet)
+
+    def _update_bullets(self):
+        """ update bullet position and delete dispared bullet """
+        self.bullets.update()
+
+        # delete dispared bullet 
+        for bullet in self.bullets.copy():
+            if bullet.rect.bottom <= 0:
+                self.bullets.remove(bullet)
+
     def _update_screen(self):
         # Refresh screen 
         self.screen.fill(self.settings.bg_color)
